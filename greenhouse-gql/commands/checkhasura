@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Export Hasura metadata
+docker-compose exec hasura hasura-cli metadata inconsistency list

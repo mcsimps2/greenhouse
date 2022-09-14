@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+docker-compose run api sh -c 'poetry add '"$*"' && poetry export --dev --without-hashes -f requirements.txt > requirements-dev.txt && poetry export --without-hashes -f requirements.txt > requirements.txt'
+docker-compose build

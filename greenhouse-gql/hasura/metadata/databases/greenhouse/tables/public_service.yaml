@@ -1,0 +1,68 @@
+table:
+  schema: public
+  name: service
+object_relationships:
+  - name: greenhouse
+    using:
+      foreign_key_constraint_on: greenhouse_id
+insert_permissions:
+  - role: client
+    permission:
+      check:
+        greenhouse:
+          roles:
+            _and:
+              - account_id:
+                  _eq: X-Hasura-Account-Id
+              - role:
+                  _eq: MANAGER
+      columns:
+        - greenhouse_id
+        - name
+        - status
+select_permissions:
+  - role: client
+    permission:
+      columns:
+        - status
+        - name
+        - greenhouse_id
+        - id
+      filter:
+        greenhouse:
+          roles:
+            _and:
+              - account_id:
+                  _eq: X-Hasura-Account-Id
+              - _or:
+                  - role:
+                      _eq: SAMPLER
+                  - role:
+                      _eq: MANAGER
+update_permissions:
+  - role: client
+    permission:
+      columns:
+        - name
+        - status
+      filter:
+        greenhouse:
+          roles:
+            _and:
+              - account_id:
+                  _eq: X-Hasura-Account-Id
+              - role:
+                  _eq: MANAGER
+      check: null
+delete_permissions:
+  - role: client
+    permission:
+      backend_only: false
+      filter:
+        greenhouse:
+          roles:
+            _and:
+              - account_id:
+                  _eq: X-Hasura-Account-Id
+              - role:
+                  _eq: MANAGER

@@ -1,0 +1,41 @@
+table:
+  schema: public
+  name: sample
+object_relationships:
+  - name: greenhouse
+    using:
+      foreign_key_constraint_on: greenhouse_id
+insert_permissions:
+  - role: client
+    permission:
+      check:
+        greenhouse:
+          roles:
+            _and:
+              - account_id:
+                  _eq: X-Hasura-Account-Id
+              - role:
+                  _eq: SAMPLER
+      columns:
+        - created_at
+        - greenhouse_id
+        - measurement
+        - service_id
+select_permissions:
+  - role: client
+    permission:
+      columns:
+        - measurement
+        - created_at
+        - greenhouse_id
+        - id
+        - service_id
+      filter:
+        greenhouse:
+          roles:
+            _and:
+              - account_id:
+                  _eq: X-Hasura-Account-Id
+              - role:
+                  _eq: MANAGER
+      allow_aggregations: true

@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  db:
+    build:
+      context: database
+      dockerfile: Dockerfile.db
+    env_file:
+      - .env.db_dev
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dbuser", "-d", "greenhouse"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./api:/code
+    env_file:
+      - .env.api_dev
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: ["flask", "run", "--host=0.0.0.0", "--port=8000"]
+  hasura:
+    build:
+      context: hasura
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    restart: always
+    logging:
+      driver: none
+    env_file:
+      - .env.hasura_dev
+    volumes:
+      - ./hasura/metadata:/metadata
+      - ./hasura/config.yaml:/config.yaml
+
+volumes:
+  postgres_data:

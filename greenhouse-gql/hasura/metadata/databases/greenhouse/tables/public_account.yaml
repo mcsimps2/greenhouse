@@ -1,0 +1,37 @@
+table:
+  schema: public
+  name: account
+object_relationships:
+  - name: service_account
+    using:
+      foreign_key_constraint_on:
+        column: id
+        table:
+          schema: public
+          name: service_account
+  - name: user_account
+    using:
+      foreign_key_constraint_on:
+        column: id
+        table:
+          schema: public
+          name: user_account
+array_relationships:
+  - name: roles
+    using:
+      foreign_key_constraint_on:
+        column: account_id
+        table:
+          schema: public
+          name: account_greenhouse_role
+select_permissions:
+  - role: client
+    permission:
+      columns:
+        - active
+        - created_at
+        - id
+        - type
+      filter:
+        id:
+          _eq: X-Hasura-Account-Id

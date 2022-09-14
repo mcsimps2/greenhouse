@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Export Hasura metadata
+gq http://localhost:8080/v1/graphql -H 'X-Hasura-Admin-Secret: hasurapwd' --introspect > schema.graphql
