@@ -1,8 +1,7 @@
 .env*
-!.env.db_test
-!.env.web_test
 !.env.db_dev
-!.env.web_dev
+!.env.api_dev
+!.env.hasura_dev
 *.db
 !Dockerfile.db
 venv
